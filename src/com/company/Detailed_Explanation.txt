@@ -1,0 +1,63 @@
+    Problem analysis
+    Taking into consideration that there are 3 condition to satisfy,
+it means that we have 3 situation to solve:
+    SI. The string length is:
+        > 20 -> we need to delete
+        < 6  -> we need to insert
+    SII. There's no lower or uppercase letter
+        -> we can insert or replace
+    SIII. There are tree repeating characters in a row
+        -> we can either insert, delete or replace a character
+
+    But, in order to have an efficient solution, we need to consider the
+cost for each operation and their order of execution for minimum changes.
+    For example, let the string be 1dg3aaa5. It has repeating characters and no uppercase.
+If we delete one 'a', then we must insert one upper such 'B'. Or with just one change, we can either
+insert one uppercase between aaa such 'aBaa', 'aaBa' or we can replace one of the tree a's.
+
+Observations
+    To solve the problem, we divide our approach into 3 cases based on the length:
+    Case 1: length < 6
+    Case 2: length >=6 && <=20
+    Case 3: length > 20
+
+    *For Case 1 we need just to insert characters matching the constrains
+    *For Case 2 we in theory we can use all operations(insert, delete, replace), but there's a catch:)
+Deleting or inserting we risk violating the length constrain, so replacing is more suitable because
+for every 3k, 3k+1, 3k+2 subsequence of repeating characters, replacing k chars will solve the problem
+ex: aaa -> aaB, aaaa -> aBa or aaB, aaaaa -> aaBaa, aaaaaa -> aaBaaB and so on
+    *For Case 3 we need to find a balance between deleting and replacing. It is obvious that the required number of
+deletion will be minimum length - 20. But, as we have seen in Case 2, replacing is more efficient than deleting for repeating chars.
+In fact, this is the most complicated case to solve, when length is > 20 and there are sequences of repeating chars(s.r.c)
+!Important!
+The key is to observe that:
+            -> deleting 1 character from 3k repeated characters will substitute one replacement
+            -> deleting 2 character from 3k+1 repeated characters will substitute one replacement
+            -> deleting 3 character from 3k+2 repeated characters will substitute one replacement
+
+    Algorithm explanation step by step
+
+     Step 1:
+        Loop through the string array and verify if there are missing characters(lower, upper or digit).
+        For writing simplicity let's name these characters as missingLUD(number from 0 to 3 assuming that the password
+        could contain special characters such '!', '?' etc.)
+     Step 2:
+        Compute required changes as fallow:
+            If length < 6 we take the maximum between the LUD and 6-length and insert that nr. of characters.
+            For this situation, insertion solves all possible problems
+                repeating and missing upper : 1aaa2 -> 1aBa2t for example.
+     Step 3:
+        Loop through the array and compute the number of required replacements and how many 3k, 3k+1 and 3k+2 s.r.c there are
+
+     Step 4:
+        Using the information provided by step 1 and step 3 and the observations made earlier, we will:
+            Case 1: take the max between missingLUD and required chars to satisfy SI.
+            Case 2: take the max between missingLUD and required nr of replacements for satisfying SII and SIII.
+            Case 3:
+            -subtract from nr of replacements the equivalent nr of deletions
+            -take the sum between the nr of required deletion for satisfying SI and the max between missingLUD and nr of replacements for
+            satisfying SII and SIII.
+
+
+
+
